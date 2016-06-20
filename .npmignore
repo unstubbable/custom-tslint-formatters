@@ -1,0 +1,6 @@
+test
+typings
+*.ts
+.editorconfig
+tsconfig.json
+tslint.json

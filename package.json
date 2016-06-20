@@ -1,6 +1,6 @@
 {
   "name": "custom-tslint-formatters",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Custom formatters for TSLint.",
   "main": "index.js",
   "scripts": {
