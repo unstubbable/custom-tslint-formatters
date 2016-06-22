@@ -9,7 +9,7 @@ interface IGroupedFailures {
 export class Formatter extends Lint.Formatters.AbstractFormatter {
   private formatFailure(failure: Lint.RuleFailure): string {
     const {line, character} = failure.getStartPosition().getLineAndCharacter();
-    const position = `${line}:${character}`;
+    const position = `${line + 1}:${character + 1}`;
     const message = failure.getFailure();
     const ruleName = failure.getRuleName();
     return `  ${position.grey} ${message} ${ruleName.grey}`;
