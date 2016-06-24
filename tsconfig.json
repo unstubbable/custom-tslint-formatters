@@ -5,6 +5,7 @@
   },
   "files": [
     "formatters/groupedFormatter.ts",
+    "formatters/vscodeFormatter.ts",
     "typings/colors.d.ts"
   ]
 }

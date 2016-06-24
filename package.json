@@ -8,6 +8,7 @@
     "build": "tsc",
     "dev": "npm run build -- -w",
     "lint:grouped": "tslint -s formatters -t grouped test/*.ts",
+    "lint:vscode": "tslint -s formatters -t vscode test/*.ts",
     "prepublish": "npm run build"
   },
   "repository": {
