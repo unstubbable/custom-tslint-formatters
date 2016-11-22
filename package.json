@@ -26,11 +26,11 @@
   },
   "homepage": "https://github.com/KingHenne/custom-tslint-formatters#readme",
   "peerDependencies": {
-    "tslint": "^3.0.0"
+    "tslint": "^4.0.0"
   },
   "devDependencies": {
-    "tslint": "^3.11.0",
-    "typescript": "^1.8.10"
+    "tslint": "^4.0.1",
+    "typescript": "^2.0.10"
   },
   "dependencies": {
     "colors": "^1.1.2"
