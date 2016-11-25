@@ -1,5 +1,4 @@
-import * as ts from 'typescript';
-import * as Lint from 'tslint/lib/lint';
+import * as Lint from 'tslint';
 import 'colors';
 
 interface IGroupedFailures {
