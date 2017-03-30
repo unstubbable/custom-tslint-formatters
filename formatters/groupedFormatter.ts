@@ -1,5 +1,5 @@
 import * as Lint from 'tslint';
-import 'colors';
+import * as chalk from 'chalk';
 
 interface IGroupedFailures {
   [fileName: string]: Lint.RuleFailure[];
@@ -11,7 +11,7 @@ export class Formatter extends Lint.Formatters.AbstractFormatter {
     const position = `${line + 1}:${character + 1}`;
     const message = failure.getFailure();
     const ruleName = failure.getRuleName();
-    return `  ${position.grey} ${message} ${ruleName.grey}`;
+    return `  ${chalk.dim(position)} ${message} ${chalk.dim(ruleName)}`;
   }
 
   private groupByFile(failures: Lint.RuleFailure[]): IGroupedFailures {
@@ -26,7 +26,7 @@ export class Formatter extends Lint.Formatters.AbstractFormatter {
   public format(failures: Lint.RuleFailure[]): string {
     const failuresByFile = this.groupByFile(failures);
     return Object.keys(failuresByFile).reduce((lines: string[], fileName: string) => {
-      lines.push(fileName.underline.yellow);
+      lines.push(chalk.underline.yellow(fileName));
       const fileFailures = failuresByFile[fileName];
       return lines.concat(fileFailures.map(this.formatFailure), ['\n']);
     }, []).join('\n');

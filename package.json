@@ -33,6 +33,8 @@
     "typescript": "^2.0.10"
   },
   "dependencies": {
-    "colors": "^1.1.2"
+    "@types/chalk": "^0.4.31",
+    "@types/node": "^7.0.12",
+    "chalk": "^1.1.3"
   }
 }
