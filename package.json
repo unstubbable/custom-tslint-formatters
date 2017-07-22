@@ -7,8 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "dev": "npm run build -- -w",
+    "format": "prettier --single-quote --trailing-comma es5 --no-bracket-spacing --parser typescript --write 'formatters/*.ts'",
     "lint:grouped": "tslint -s formatters -t grouped test/*.ts",
     "lint:vscode": "tslint -s formatters -t vscode test/*.ts",
+    "precommit": "lint-staged",
     "prepublish": "npm run build"
   },
   "repository": {
@@ -31,10 +33,20 @@
   "devDependencies": {
     "@types/chalk": "^0.4.31",
     "@types/node": "^7.0.12",
+    "lint-staged": "^4.0.2",
+    "prettier": "^1.5.3",
     "tslint": "^5.0.0",
     "typescript": "^2.2.2"
   },
   "dependencies": {
     "chalk": "^1.1.3"
+  },
+  "lint-staged": {
+    "linters": {
+      "formatters/*.ts": [
+        "prettier --single-quote --trailing-comma es5 --no-bracket-spacing --parser typescript --write",
+        "git add"
+      ]
+    }
   }
 }

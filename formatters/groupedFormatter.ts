@@ -15,20 +15,25 @@ export class Formatter extends Lint.Formatters.AbstractFormatter {
   }
 
   private groupByFile(failures: Lint.RuleFailure[]): IGroupedFailures {
-    return failures.reduce((groups: IGroupedFailures, failure: Lint.RuleFailure) => {
-      const fileName = failure.getFileName();
-      const fileFailures = groups[fileName] || [];
-      groups[fileName] = [...fileFailures, failure];
-      return groups;
-    }, {} as IGroupedFailures);
+    return failures.reduce(
+      (groups: IGroupedFailures, failure: Lint.RuleFailure) => {
+        const fileName = failure.getFileName();
+        const fileFailures = groups[fileName] || [];
+        groups[fileName] = [...fileFailures, failure];
+        return groups;
+      },
+      {} as IGroupedFailures
+    );
   }
 
   public format(failures: Lint.RuleFailure[]): string {
     const failuresByFile = this.groupByFile(failures);
-    return Object.keys(failuresByFile).reduce((lines: string[], fileName: string) => {
-      lines.push(chalk.underline.yellow(fileName));
-      const fileFailures = failuresByFile[fileName];
-      return lines.concat(fileFailures.map(this.formatFailure), ['\n']);
-    }, []).join('\n');
+    return Object.keys(failuresByFile)
+      .reduce((lines: string[], fileName: string) => {
+        lines.push(chalk.underline.yellow(fileName));
+        const fileFailures = failuresByFile[fileName];
+        return lines.concat(fileFailures.map(this.formatFailure), ['\n']);
+      }, [])
+      .join('\n');
   }
 }
