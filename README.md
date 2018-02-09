@@ -12,6 +12,8 @@ Prints a block for each file with the file name as headline.
 
 <img width="603" alt="custom tslint formatter grouped" src="docs/screenshots/grouped.png">
 
+Errors are printed with a red position (`row:column`), warnings are printed with a yellow position.
+
 ### `vscode`
 
 This is a technical formatter that can be used as input for a task in Visual Studio Code to lint all files in a project.
