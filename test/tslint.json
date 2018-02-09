@@ -1,0 +1,9 @@
+{
+    "extends": "../node_modules/tslint/lib/configs/recommended.js",
+    "rules": {
+        "quotemark": {
+            "severity": "warning",
+            "options": "single"
+        }
+    }
+}

@@ -11,7 +11,9 @@ export class Formatter extends Lint.Formatters.AbstractFormatter {
     const position = `${line + 1}:${character + 1}`;
     const message = failure.getFailure();
     const ruleName = failure.getRuleName();
-    return `  ${chalk.dim(position)} ${message} ${chalk.dim(ruleName)}`;
+    const severity = failure.getRuleSeverity();
+    const positionColor = severity === 'warning' ? chalk.yellow : chalk.red;
+    return `  ${positionColor(position)} ${message} ${chalk.dim(ruleName)}`;
   }
 
   private groupByFile(failures: Lint.RuleFailure[]): IGroupedFailures {
@@ -30,7 +32,7 @@ export class Formatter extends Lint.Formatters.AbstractFormatter {
     const failuresByFile = this.groupByFile(failures);
     return Object.keys(failuresByFile)
       .reduce((lines: string[], fileName: string) => {
-        lines.push(chalk.underline.yellow(fileName));
+        lines.push(chalk.underline.green(fileName));
         const fileFailures = failuresByFile[fileName];
         return lines.concat(fileFailures.map(this.formatFailure), ['\n']);
       }, [])
