@@ -1,5 +1,5 @@
 import * as Lint from 'tslint';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 
 interface IGroupedFailures {
   [fileName: string]: Lint.RuleFailure[];
