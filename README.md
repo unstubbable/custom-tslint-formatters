@@ -10,7 +10,7 @@ Included Formatters
 
 Prints a block for each file with the file name as headline.
 
-![custom tslint formatter grouped](docs/screenshots/grouped.png)
+<img width="603" alt="custom tslint formatter grouped" src="docs/screenshots/grouped.png">
 
 ### `vscode`
 
