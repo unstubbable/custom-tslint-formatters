@@ -4,6 +4,10 @@
         "quotemark": {
             "severity": "warning",
             "options": "single"
-        }
+        },
+        "typedef": [
+            true,
+            "call-signature"
+        ]
     }
 }

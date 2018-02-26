@@ -4,7 +4,8 @@
     "module": "commonjs",
     "lib": [
       "es2015", "es2015.collection"
-    ]
+    ],
+    "strict": true
   },
   "files": [
     "formatters/groupedFormatter.ts",

@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/log-symbols@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/log-symbols/-/log-symbols-2.0.0.tgz#7919e2ec3c8d13879bfdcab310dd7a3f7fc9466d"
+
 "@types/node@^8.9.1":
   version "8.9.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.9.1.tgz#5a329d73a97f3c5a626dfe0ed8c0b831fee5357a"
@@ -431,7 +435,7 @@ log-symbols@^1.0.2:
   dependencies:
     chalk "^1.0.0"
 
-log-symbols@^2.0.0:
+log-symbols@^2.0.0, log-symbols@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/log-symbols/-/log-symbols-2.2.0.tgz#5740e1c5d6f0dfda4ad9323b5332107ef6b4c40a"
   dependencies:

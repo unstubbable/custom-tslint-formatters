@@ -1,1 +1,3 @@
-let bar="";
+function foo () {
+  return "";
+}

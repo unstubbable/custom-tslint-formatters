@@ -1,33 +1,87 @@
 import * as Lint from 'tslint';
 import chalk from 'chalk';
+import * as logSymbols from 'log-symbols';
 
-interface GroupedFailures {
-  [fileName: string]: Lint.RuleFailure[];
-}
+class FailureGroup {
+  public failures: Lint.RuleFailure[];
 
-export class Formatter extends Lint.Formatters.AbstractFormatter {
-  private formatFailure(failure: Lint.RuleFailure): string {
-    const {line, character} = failure.getStartPosition().getLineAndCharacter();
-    const position = `${line + 1}:${character + 1}`;
-    const message = failure.getFailure();
-    const ruleName = failure.getRuleName();
-    const severity = failure.getRuleSeverity();
-    const positionColor = severity === 'warning' ? chalk.yellow : chalk.red;
-    return `  ${positionColor(position)} ${message} ${chalk.dim(ruleName)}`;
+  constructor(public filename: string) {
+    this.failures = [];
   }
 
-  private groupByFile(failures: Lint.RuleFailure[]): GroupedFailures {
-    return failures.reduce(
-      (groups: GroupedFailures, failure: Lint.RuleFailure) => {
-        const fileName = failure.getFileName();
-        const fileFailures = groups[fileName] || [];
-        groups[fileName] = [...fileFailures, failure];
-        return groups;
-      },
-      {} as GroupedFailures
+  add(failure: Lint.RuleFailure): void {
+    this.failures.push(failure);
+  }
+
+  public get warningCount(): number {
+    return this.getCountForSeverity('warning');
+  }
+
+  public get errorCount(): number {
+    return this.getCountForSeverity('error');
+  }
+
+  public get fixCount(): number {
+    return this.failures.reduce(
+      (count, failure) => (failure.hasFix() ? count + 1 : count),
+      0
     );
   }
 
+  private getCountForSeverity(severity: Lint.RuleSeverity): number {
+    return this.failures.reduce(
+      (count, failure) =>
+        failure.getRuleSeverity() === severity ? count + 1 : count,
+      0
+    );
+  }
+}
+
+class GroupedFailures {
+  public groups: {
+    [fileName: string]: FailureGroup | undefined;
+  };
+
+  constructor(failures: Lint.RuleFailure[]) {
+    this.groups = {};
+    failures.forEach((failure: Lint.RuleFailure) => this.addFailure(failure));
+  }
+
+  public addFailure(failure: Lint.RuleFailure): void {
+    const filename = failure.getFileName();
+    let group = this.groups[filename];
+
+    if (!group) {
+      this.groups[filename] = group = new FailureGroup(filename);
+    }
+
+    group.add(failure);
+  }
+
+  public get warningCount(): number {
+    return this.reduce((count, group) => count + group.warningCount, 0);
+  }
+
+  public get errorCount(): number {
+    return this.reduce((count, group) => count + group.errorCount, 0);
+  }
+
+  public get fixCount(): number {
+    return this.reduce((count, group) => count + group.fixCount, 0);
+  }
+
+  public reduce<V>(
+    callbackfn: (previousValue: V, group: FailureGroup) => V,
+    initialValue: V
+  ): V {
+    return Object.keys(this.groups).reduce((previousValue, filename) => {
+      const group = this.groups[filename];
+      return group ? callbackfn(previousValue, group) : previousValue;
+    }, initialValue);
+  }
+}
+
+export class Formatter extends Lint.Formatters.AbstractFormatter {
   protected sortFailures(failures: Lint.RuleFailure[]): Lint.RuleFailure[] {
     return failures.sort((a, b) => {
       const {
@@ -50,14 +104,69 @@ export class Formatter extends Lint.Formatters.AbstractFormatter {
   }
 
   public format(failures: Lint.RuleFailure[]): string {
-    const failuresByFile = this.groupByFile(this.sortFailures(failures));
+    const failuresByFile = new GroupedFailures(this.sortFailures(failures));
 
-    return Object.keys(failuresByFile)
-      .reduce((lines: string[], fileName: string) => {
-        lines.push(chalk.underline.green(fileName));
-        const fileFailures = failuresByFile[fileName];
-        return lines.concat(fileFailures.map(this.formatFailure), ['\n']);
-      }, [])
-      .join('\n');
+    return `${getDetails(failuresByFile)}\n${getSummary(failuresByFile)}`;
   }
+}
+
+function formatFailure(failure: Lint.RuleFailure): string {
+  const {line, character} = failure.getStartPosition().getLineAndCharacter();
+  const position = `${line + 1}:${character + 1}`;
+  const message = failure.getFailure();
+  const ruleName = failure.getRuleName();
+  const severity = failure.getRuleSeverity();
+  const positionColor = severity === 'warning' ? chalk.yellow : chalk.red;
+  const fixHint = failure.hasFix() ? ` ${logSymbols.info}` : '';
+
+  return `  ${positionColor(position)} ${message} ${chalk.dim(
+    ruleName
+  )}${fixHint}`;
+}
+
+function getDetails(failures: GroupedFailures): string {
+  return failures.reduce((current, group) => {
+    const headline = chalk.underline.green(group.filename);
+    const formattedFailures = group.failures.map(formatFailure).join('\n');
+
+    return `${current}\n${headline}\n${formattedFailures}\n`;
+  }, '');
+}
+
+function getSummary(failures: GroupedFailures): string {
+  const {warningCount, errorCount, fixCount} = failures;
+  const issueCount = warningCount + errorCount;
+
+  const warnings = getCountText('warning', warningCount);
+  const errors = getCountText('error', errorCount);
+  const status = getStatusSymbol(warningCount, errorCount);
+  const summary = `${status} Found ${warnings} and ${errors}.`;
+
+  return issueCount === 0
+    ? summary
+    : `${summary}\n${getFixableHint(issueCount, fixCount)}\n`;
+}
+
+function getFixableHint(issueCount: number, fixCount: number): string {
+  const issues = getCountText('issue', issueCount);
+
+  return `${logSymbols.info} ${fixCount} out of ${issues} ${
+    fixCount === 1 ? 'is' : 'are'
+  } fixable with the tslint option \`--fix\`.`;
+}
+
+function getCountText(word: string, count: number): string {
+  return `${count} ${count === 1 ? word : `${word}s`}`;
+}
+
+function getStatusSymbol(warningCount: number, errorCount: number): string {
+  if (errorCount > 0) {
+    return logSymbols.error;
+  }
+
+  if (warningCount > 0) {
+    return logSymbols.warning;
+  }
+
+  return logSymbols.success;
 }
