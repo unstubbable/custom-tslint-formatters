@@ -9,6 +9,7 @@
     "dev": "npm run build -- -w",
     "format": "prettier --single-quote --trailing-comma es5 --no-bracket-spacing --parser typescript --write 'formatters/*.ts'",
     "lint:grouped": "tslint -s formatters -t grouped test/*.ts",
+    "lint:grouped:ok": "tslint -s formatters -t grouped test/test3.ts",
     "lint:vscode": "tslint -s formatters -t vscode test/*.ts",
     "precommit": "lint-staged",
     "prepublish": "npm run build"
