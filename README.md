@@ -8,9 +8,9 @@ Included Formatters
 
 ### `grouped`
 
-Prints a block for each file with the file name as headline.
+Prints a block for each file with the file name as headline, followed by a summary.
 
-<img width="603" alt="custom tslint formatter grouped" src="docs/screenshots/grouped.png">
+<img width="662" alt="custom tslint formatter grouped" src="docs/screenshots/grouped.png">
 
 Errors are printed with a red position (`row:column`), warnings are printed with a yellow position.
 
