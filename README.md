@@ -10,7 +10,7 @@ Included Formatters
 
 Prints a block for each file with the file name as headline, followed by a summary.
 
-<img width="662" alt="custom tslint formatter grouped" src="docs/screenshots/grouped.png">
+<img width="715" alt="custom tslint formatter grouped" src="docs/screenshots/grouped.png">
 
 Errors are printed as `error: row:column <error>`, warnings are printed as `warning: row:column <warning>`.
 
