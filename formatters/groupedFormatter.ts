@@ -116,10 +116,10 @@ function formatFailure(failure: Lint.RuleFailure): string {
   const message = failure.getFailure();
   const ruleName = failure.getRuleName();
   const severity = failure.getRuleSeverity();
-  const positionColor = severity === 'warning' ? chalk.yellow : chalk.red;
+  const severityColor = severity === 'warning' ? chalk.yellow : chalk.red;
   const fixHint = failure.hasFix() ? ` ${logSymbols.info}` : '';
 
-  return `  ${positionColor(position)} ${message} ${chalk.dim(
+  return `  ${severityColor(severity)}: ${chalk.blue(position)} ${message} ${chalk.dim(
     ruleName
   )}${fixHint}`;
 }
